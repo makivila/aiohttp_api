@@ -29,7 +29,9 @@ class RegisterUsecase:
                 )
 
             role = await self._role_repo.get_role_by_role_name(user_dto.role)
-
+            if not role:
+                return UsecaseResult(UsecaseStatus.BAD_REQUEST, "invalid role")
+            
             new_user = User(
                 first_name=user_dto.first_name,
                 second_name=user_dto.second_name,

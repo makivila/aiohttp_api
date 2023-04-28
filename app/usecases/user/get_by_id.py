@@ -23,7 +23,7 @@ class GetUserByIdUsecase:
                 login=user.login,
                 born=user.born,
                 registration_date=user.registration_date,
-                role=user.role.role,
+                role_id=user.role_id,
             )
 
             return UsecaseResult(data=user_dto)

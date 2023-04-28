@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from os import environ as env
-from app.models.models import Base
+from app.models.models import metadata
 
 config = context.config
 
@@ -22,7 +22,7 @@ connection_str = (
 
 config.set_main_option("sqlalchemy.url", connection_str)
 
-target_metadata = Base.metadata
+target_metadata = metadata
 
 
 def run_migrations_offline() -> None:

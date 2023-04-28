@@ -11,6 +11,7 @@ from app.usecases.user.login import LoginUsecase
 from app.usecases.user.register import RegisterUsecase
 from config.config import Config
 from logger.logger import get_logger
+from database.database import engine
 
 
 auth_routes = web.RouteTableDef()
@@ -18,10 +19,10 @@ auth_routes = web.RouteTableDef()
 
 @auth_routes.post("/login")
 async def login(request):
-    session_manager = SessionManager()
+    session_manager = SessionManager(engine)
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
+    user_repo = UserRepository(engine)
     login_usecase = LoginUsecase(logger, user_repo)
 
     if not request.has_body:
@@ -53,8 +54,8 @@ async def login(request):
 async def register(request):
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
-    role_repo = RoleRepository()
+    user_repo = UserRepository(engine)
+    role_repo = RoleRepository(engine)
     register_usecase = RegisterUsecase(logger, user_repo, role_repo)
 
     if not request.has_body:
@@ -88,7 +89,7 @@ async def register(request):
 
 
 async def _is_requester_admin(request) -> bool:
-    session_manager = SessionManager()
+    session_manager = SessionManager(engine)
     session_id = request.cookies.get("session_id")
     if not session_id:
         return False
@@ -97,4 +98,4 @@ async def _is_requester_admin(request) -> bool:
     if not session:
         return False
 
-    return session.user.role.role == "admin"
+    return session.role == "admin"

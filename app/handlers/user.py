@@ -13,7 +13,7 @@ from aiohttp import web
 from app.usecases.user.update import UpdateUserUsecase
 from config.config import Config
 from logger.logger import get_logger
-
+from database.database import engine
 
 user_routes = web.RouteTableDef()
 
@@ -28,12 +28,12 @@ async def get_user_by_id(request):
     if not await is_permitted(request.session, "get_user_by_id"):
         return failure_response("access denied", 403)
 
-    if request.session.user_id != id and request.session.user.role.role != "admin":
+    if request.session.user_id != id and request.session.role != "admin":
         return failure_response("access denied", 403)
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
+    user_repo = UserRepository(engine)
     get_user_by_id_usecase = GetUserByIdUsecase(logger, user_repo)
 
     result = await get_user_by_id_usecase.execute(id)
@@ -52,7 +52,7 @@ async def get_all_users(request):
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
+    user_repo = UserRepository(engine)
     get_all_users_usecase = GetAllUsersUsecase(logger, user_repo)
 
     result = await get_all_users_usecase.execute()
@@ -78,13 +78,13 @@ async def update_user(request):
     if not await is_permitted(request.session, "update_user"):
         return failure_response("access denied", 403)
 
-    if request.session.user_id != id and request.session.user.role.role != "admin":
+    if request.session.user_id != id and request.session.role != "admin":
         return failure_response("access denied", 403)
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
-    role_repo = RoleRepository()
+    user_repo = UserRepository(engine)
+    role_repo = RoleRepository(engine)
     update_user_usecase = UpdateUserUsecase(logger, user_repo, role_repo)
 
     body = await request.json()
@@ -101,7 +101,7 @@ async def update_user(request):
         return failure_response(e.errors(), 400)
 
     if user_dto.role == "admin":
-        if not request.session.user.role.role == "admin":
+        if not request.session.role == "admin":
             return failure_response(
                 "only admin permitted to set admin role to another user", 403
             )
@@ -123,12 +123,12 @@ async def delete_user(request):
     if not await is_permitted(request.session, "delete_user"):
         return failure_response("access denied", 403)
 
-    if request.session.user_id != id and request.session.user.role.role != "admin":
+    if request.session.user_id != id and request.session.role != "admin":
         return failure_response("access denied", 403)
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    user_repo = UserRepository()
+    user_repo = UserRepository(engine)
     delete_user_usecase = DeleteUserUsecase(logger, user_repo)
 
     result = await delete_user_usecase.execute(id)

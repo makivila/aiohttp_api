@@ -18,7 +18,7 @@ class UserDTOResponse(BaseModel):
     login: str
     born: datetime.date
     registration_date: datetime.date
-    role: str
+    role_id: int
 
 
 class LoginDTO(BaseModel):

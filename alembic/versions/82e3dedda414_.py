@@ -3,7 +3,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "fb2a395634f0"
+revision = "82e3dedda414"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -15,7 +15,7 @@ def upgrade() -> None:
         "roles",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("role", sa.String(), nullable=False),
-        sa.Column("permissions", sa.ARRAY(sa.String()), nullable=False),
+        sa.Column("permissions", sa.ARRAY(sa.String()), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("role"),
     )

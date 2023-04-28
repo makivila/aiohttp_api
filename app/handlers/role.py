@@ -13,6 +13,7 @@ from app.usecases.role.get_by_id import GetRoleByIdUsecase
 from app.usecases.role.update import UpdateRoleUsecase
 from config.config import Config
 from logger.logger import get_logger
+from database.database import engine
 
 
 role_routes = web.RouteTableDef()
@@ -22,7 +23,7 @@ role_routes = web.RouteTableDef()
 async def register(request):
     logger = get_logger(Config.LOG_LEVEL)
 
-    role_repo = RoleRepository()
+    role_repo = RoleRepository(engine)
     create_role_usecase = CreateRoleUsecase(logger, role_repo)
 
     if not await is_permitted(request.session, "create_role"):
@@ -60,7 +61,7 @@ async def get_role_by_id(request):
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    role_repo = RoleRepository()
+    role_repo = RoleRepository(engine)
     get_role_by_id_usecase = GetRoleByIdUsecase(logger, role_repo)
 
     result = await get_role_by_id_usecase.execute(id)
@@ -79,7 +80,7 @@ async def get_all_roles(request):
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    role_repo = RoleRepository()
+    role_repo = RoleRepository(engine)
     get_all_roles_usecase = GetAllRolesUsecase(logger, role_repo)
 
     result = await get_all_roles_usecase.execute()
@@ -107,7 +108,7 @@ async def update_role(request):
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    role_repo = RoleRepository()
+    role_repo = RoleRepository(engine)
     update_role_usecase = UpdateRoleUsecase(logger, role_repo)
 
     if not request.has_body:
@@ -142,7 +143,7 @@ async def delete_role(request):
 
     logger = get_logger(Config.LOG_LEVEL)
 
-    role_repo = RoleRepository()
+    role_repo = RoleRepository(engine)
     delete_role_usecase = DeleteRoleUsecase(logger, role_repo)
 
     result = await delete_role_usecase.execute(id)

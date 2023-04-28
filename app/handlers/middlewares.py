@@ -3,11 +3,12 @@ from aiohttp import web
 from app.handlers.helpers.responses import failure_response
 from app.managers.session import SessionManager
 from config.config import Config
+from database.database import engine
 
 
 @web.middleware
 async def manage_session(request, handler):
-    session_manager = SessionManager()
+    session_manager = SessionManager(engine)
     session_id = request.cookies.get("session_id")
     if not session_id:
         return failure_response(
