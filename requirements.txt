@@ -1,0 +1,6 @@
+aiohttp
+sqlalchemy[asyncio]
+asyncpg
+python-dotenv
+alembic
+pydantic

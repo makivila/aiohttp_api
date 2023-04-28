@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: sima_land_app
+    build: ./
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - db
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - .:/app
+
+  db:
+    container_name: sima_land_postgres
+    image: postgres:15.1
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DB_DATABASE_NAME}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    command: -p ${DB_PORT} -c log_statement=all
+volumes:
+  postgres_data:
