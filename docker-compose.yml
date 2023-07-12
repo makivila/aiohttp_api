@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    container_name: sima_land_app
+    container_name: aiohttp_app
     build: ./
     ports:
       - ${APP_PORT}:${APP_PORT}
@@ -15,7 +15,7 @@ services:
       - .:/app
 
   db:
-    container_name: sima_land_postgres
+    container_name: aiohttp_postgres
     image: postgres:15.1
     env_file:
       - .env

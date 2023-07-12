@@ -1,11 +1,8 @@
-# API AIOHTTP
-REST API приложение
-
 ## Установка и запуск
 
 ```sh
-git clone https://github.com/makivila/simaland_test.git
-cd simaland_test
+git clone https://github.com/makivila/aiohttp_api.git
+cd aiohttp_api
 make run
 make migrate_up
 
